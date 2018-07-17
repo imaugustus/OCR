@@ -11,7 +11,7 @@ using namespace std;
 VTM::VTM()
 {
 	this->total_count = 1024908267229;
-	this->max_dict_word_length = 20;
+	this->max_dict_word_length = 0;
 }
 
 
@@ -40,6 +40,7 @@ bool VTM::load_dict(string corpus_path)
 			this->dictionary[word] = num;
 		}
 		cout << "Dict loaded" << endl;
+		return true;
 	}
 }
 
@@ -58,9 +59,9 @@ tuple<string, double>VTM::segment(string input, int max_dict_word_length)
 	int array_width_byte = array_width << 3;
 	//cout << array_width_byte << endl;
 	vector<vector<long long int>> segmented_space_bits(array_size, vector<long long int>(array_width, 0));
-	double *log_prob_sum = new double[array_size];
+	vector<double> log_prob_sum(array_size);
 	int circular_index = -1;
-	cout << circular_index << endl;
+	//cout << circular_index << endl;
 
 	for (int j = 0; j < input.length(); j++) {
 		int space_index = (j - 1) >> 6;
@@ -78,11 +79,13 @@ tuple<string, double>VTM::segment(string input, int max_dict_word_length)
 			double log_prob_part = 0;
 			dict_iter = dictionary.find(part);
 			if (dict_iter != dictionary.end()) {
-				double word_count = dict_iter->second;
+				long long int word_count = dict_iter->second;
 				log_prob_part = log10((double)word_count / (double)total_count);
+				cout << "log prob part "<< log_prob_part << endl;
 			}
 			else {
 				log_prob_part = log10(10.0 / (double)(total_count*pow(10, part.length())));
+				cout << "log prob part " << log_prob_part << endl;
 			}
 			if (j == 0) {
 				log_prob_sum[destination_index] = log_prob_part;
@@ -104,7 +107,7 @@ tuple<string, double>VTM::segment(string input, int max_dict_word_length)
 		if ((segmented_space_bits[circular_index][i >> 6] & (1 << (i&cmp)))>0) {
 			ss << input.substr(last + 1, i - last) << " ";
 			last = i;
-			cout << i << endl;
+			cout <<" " << i << endl;
 		}
 	}
 	ss << input.substr(last + 1);
