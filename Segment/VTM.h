@@ -4,15 +4,15 @@
 #include <tuple>
 
 using namespace std;
-class TM
+class VTM
 {
 public:
-	TM();
-	~TM();
-	map<string, double> dictionary;
-	map<string, double> ::iterator dict_iter;
+	VTM();
+	~VTM();
+	map<string, long long int> dictionary;
+	map<string, long long int> ::iterator dict_iter;
 	int max_dict_word_length;
-	double total_count;
+	long long int total_count;
 	bool load_dict(string corpus_path);
 	tuple<string, double> segment(string input);
 	tuple<string, double> segment(string input, int max_dict_word_length);

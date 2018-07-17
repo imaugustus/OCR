@@ -24,6 +24,9 @@
     <ClInclude Include="TM.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="VTM.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -35,9 +38,15 @@
     <ClCompile Include="TM.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="VTM.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="frequency_dictionary_en_82_765.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="new.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>
