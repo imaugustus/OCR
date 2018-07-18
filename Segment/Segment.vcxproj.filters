@@ -27,6 +27,12 @@
     <ClInclude Include="VTM.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EditDistance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +45,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="VTM.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DP.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="EditDistance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
