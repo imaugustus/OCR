@@ -9,12 +9,12 @@ class VTM
 public:
 	VTM();
 	~VTM();
-	map<string, long long int> dictionary;
-	map<string, long long int> ::iterator dict_iter;
+	map<string, unsigned long long int> dictionary;
+	map<string, unsigned long long int> ::iterator dict_iter;
 	int max_dict_word_length;
-	long long int total_count;
+	unsigned long long int total_count;
 	bool load_dict(string corpus_path);
-	tuple<string, double> segment(string input);
-	tuple<string, double> segment(string input, int max_dict_word_length);
+	void segment(string input, string *segmented_string, double &probability_ref);
+	void segment(string input, string *segmented_string, double &probability_ref, int max_dict_word_length);
 };
 
