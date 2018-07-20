@@ -2,11 +2,12 @@
 #include "SymSpellCheck.h"
 
 
-SymSpellCheck::SymSpellCheck()
+
+SymSpellCheck::SymSpellCheck(int initialCapacity, int maxDictionaryEditDistance, int prefixLength, int countThreshold, byte compactLevel)
 {
 }
-
 
 SymSpellCheck::~SymSpellCheck()
 {
 }
+

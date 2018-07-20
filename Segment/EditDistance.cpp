@@ -63,3 +63,31 @@ int EditDistance::EditDistanceDp(string left, string right)
 	}
 	return cache[l_length][r_length];
 }
+
+int EditDistance::EidtDistanceOp(string left, string right)
+{
+	int l_length = left.length();
+	int r_length = right.length();
+	vector<int> head(r_length + 1, 0);
+	vector<int> prev(r_length + 1, 0);
+	for (int i = 0; i < r_length+1; i++) {
+		prev[i] = i;
+	}
+	for (int k = 1; k < l_length+1; k++) {
+		head[0] = k;
+		for (int m = 1; m < r_length + 1; m++) {
+			if (left.at(k-1) == right.at(m-1)) {
+				head[m] = prev[m - 1];
+				cout << head[m] << endl;
+			}
+			else {
+				int a = head[m - 1] + 1;
+				int b = prev[m] + 1;
+				int c = prev[m - 1] + 1;
+				head[m] = min(a, min(b, c));
+			}
+		}
+		prev = head;
+	}
+	return head[r_length];
+}

@@ -39,6 +39,15 @@
     <ClInclude Include="SymSpellCheck.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ChunkArray.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SuggestItem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SuggestionStage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +72,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SymSpellCheck.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkArray.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SuggestItem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SuggestionStage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

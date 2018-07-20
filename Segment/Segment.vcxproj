@@ -153,9 +153,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BKtree.h" />
+    <ClInclude Include="ChunkArray.h" />
     <ClInclude Include="DP.h" />
     <ClInclude Include="EditDistance.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SuggestionStage.h" />
+    <ClInclude Include="SuggestItem.h" />
     <ClInclude Include="SymSpellCheck.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TM.h" />
@@ -163,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BKtree.cpp" />
+    <ClCompile Include="ChunkArray.cpp" />
     <ClCompile Include="DP.cpp" />
     <ClCompile Include="EditDistance.cpp" />
     <ClCompile Include="Segment.cpp" />
@@ -172,6 +176,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SuggestionStage.cpp" />
+    <ClCompile Include="SuggestItem.cpp" />
     <ClCompile Include="SymSpellCheck.cpp" />
     <ClCompile Include="TM.cpp" />
     <ClCompile Include="VTM.cpp" />

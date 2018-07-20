@@ -14,5 +14,6 @@ public:
 	string right;
 	static int EditDistanceRe(string l, string r);
 	static int EditDistanceDp(string left, string right);
+	static int EidtDistanceOp(string left, string right);
 };
 
