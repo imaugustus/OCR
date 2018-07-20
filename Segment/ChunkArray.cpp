@@ -19,17 +19,17 @@ ChunkArray<T>::ChunkArray(int initialCapacity)
 template<class T>
 int ChunkArray<T>::Row(int index)
 {
-	return 0;
+	return index>>index;
 }
 
 template<class T>
 int ChunkArray<T>::Col(int index)
 {
-	return 0;
+	return index &(this->ChunkSize-1);
 }
 
 template<class T>
 int ChunkArray<T>::Capacity()
 {
-	return 0;
+	return Va;
 }

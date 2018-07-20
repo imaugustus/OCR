@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <ChunkArray.h>
 
 using namespace std;
 
@@ -23,6 +24,8 @@ public:
 	}Entry;
 
 private:
+	unordered_map<int, Entry> Deletes;
+	ChunkArray<Node> Nodes;
 
 };
 
