@@ -7,6 +7,8 @@
 #include <set>
 #include <SuggestItem.h>
 #include <SuggestionStage.h>
+#include <ChunkArray.h>
+
 
 using namespace std;
 

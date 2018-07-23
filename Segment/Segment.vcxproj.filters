@@ -36,9 +36,6 @@
     <ClInclude Include="BKtree.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SymSpellCheck.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ChunkArray.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -46,6 +43,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SuggestionStage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SymSpellCheck.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,9 +71,6 @@
     <ClCompile Include="BKtree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SymSpellCheck.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ChunkArray.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -81,6 +78,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SuggestionStage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SymSpellCheck.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
