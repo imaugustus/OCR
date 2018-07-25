@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <regex>
+
 
 using namespace std;
 
@@ -137,7 +139,7 @@ bool SymSpellCheck::CreateDictionary(string corpus)
 			CreateDictionaryEntry(key, 1, staging);
 		}
 	}
-	if (!(&this->deletes)) this->deletes = unordered_map<int, vector<string>>(staging.DeleteCount);
+	//if (!(&(this->deletes))) this->deletes = unordered_map<int, vector<string>>(staging.DeleteCount);
 	CommitStaged(staging);
 	return true;
 }
@@ -279,43 +281,176 @@ vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity, int
 				}
 			}
 		}
-
-		}
 	}
-
+	if (suggestions.size() > 1) sort(suggestions.begin(), suggestions.end());
+	return suggestions;
 }
 
 vector<SuggestItem> SymSpellCheck::lookupCompound(string input, int maxEditDistance)
 {
-	return vector<SuggestItem>();
+	if(maxEditDistance>maxDictionaryEditDistance) throw invalid_argument("Dist to big " + maxEditDistance);
+	vector<string> termList1 = ParseWords(input);
+	vector<SuggestItem> suggestions;
+	vector<SuggestItem> suggestionParts;
+	vector<SuggestItem> suggestionsCombi;
+	EditDistance editDistance;
+
+	bool lastCombi = false;
+	for (int i = 0; i < termList1.size(); i++) {
+		suggestions = Lookup(termList1[i], Top, maxEditDistance);
+		if ((i > 0) && !lastCombi) {
+			suggestionsCombi = Lookup(termList1[i - 1] + termList1[i], Top, maxEditDistance);
+			if (!suggestionsCombi.empty()) {
+				SuggestItem best1 = suggestionParts[suggestionParts.size() - 1];
+				SuggestItem best2;
+				if (!suggestions.empty()) best2 = suggestions[0];
+				else best2 = SuggestItem(termList1[i], maxEditDistance + 1, 0);
+
+				editDistance = EditDistance(termList1[i - 1] + " " + termList1[i], Damerau);
+				if ((suggestionsCombi[0].distance + 1) < editDistance.DamerauLevenshteinDistance(best1.term + " " + best2.term, maxEditDistance)) {
+					(suggestionsCombi[0].distance)++;
+					suggestionParts[suggestionParts.size() - 1]=suggestionsCombi[0];
+					lastCombi = true;
+					continue;
+				}
+			}
+		}
+
+		lastCombi = false;
+		if (!suggestions.empty() && ((suggestions[0].distance == 0) || (termList1[i].length() == 1))) {
+			suggestionParts.push_back(suggestions[0]);
+		}
+		else {
+			vector<SuggestItem> suggestionsSplit;
+			if (!suggestions.empty()) suggestionsSplit.push_back(suggestions[0]);
+			if (termList1[i].length() > 1) {
+				for (int j = 1; j < termList1[i].length(); j++) {
+					string part1 = termList1[i].substr(0, j);
+					string part2 = termList1[i].substr(j);
+					SuggestItem suggestionSplit;
+					vector<SuggestItem> suggestions1 = Lookup(part1, Top, maxEditDistance);
+					if (!suggestions1.empty()) {
+						if (!suggestions.empty() && (suggestions[0] == suggestions1[0])) continue;
+						vector<SuggestItem> suggestions2 = Lookup(part2, Top, maxEditDistance);
+
+						if (!suggestions2.empty()) {
+							if (!suggestions.empty() && (suggestions[0] == suggestions2[0])) continue;
+							string split = suggestions1[0].term + " " + suggestions2[0].term;
+							editDistance = EditDistance(termList1[i], Damerau);
+							suggestionSplit = SuggestItem(split, 
+								editDistance.DamerauLevenshteinDistance(split, maxEditDistance), min(suggestions1[0].count, suggestions2[0].count));
+							if (suggestionSplit.distance >= 0) suggestionsSplit.push_back(suggestionSplit);
+							if (suggestionSplit.distance == 1) break;
+						}
+					}
+				}
+
+				if (!suggestionsSplit.empty()) {
+					sort(suggestionsSplit.begin(), suggestionsSplit.end());
+					suggestionParts.push_back(suggestionsSplit[0]);
+				}
+				else {
+					SuggestItem si(termList1[i], 0, maxEditDistance + 1);
+					suggestionParts.push_back(si);
+				}
+			}
+			else {
+				SuggestItem si(termList1[i], 0, maxEditDistance + 1);
+				suggestionParts.push_back(si);
+			}
+		}
+	}
+
+	SuggestItem suggestion("", numeric_limits<int>::min(), numeric_limits<long int>::max());
+	stringstream ss;
+	for (SuggestItem si : suggestionParts) {
+		ss << si.term;
+		suggestion.count = min(suggestion.count, si.count);
+	}
+	
+	string tmp = ss.str();
+	regex rgx_rpl("\\s+$");
+	tmp = regex_replace(tmp, rgx_rpl, "");
+	suggestion.term = tmp;
+	editDistance = EditDistance(suggestion.term, Damerau);
+	suggestion.distance = editDistance.DamerauLevenshteinDistance(input, maxDictionaryEditDistance);
+	vector<SuggestItem> suggestionLine;
+	suggestionLine.push_back(suggestion);
+	return suggestionLine;
+
 }
 
 vector<SuggestItem> SymSpellCheck::lookupCompound(string input)
 {
-	return vector<SuggestItem>();
+	return lookupCompound(input, this->maxDictionaryEditDistance);
 }
 
 bool SymSpellCheck::DeleteInSuggestionPrefix(string delete_str, int deleteLen, string suggestion, int suggestionLen)
 {
-	return false;
+	if (deleteLen == 0) return true;
+	if (prefixLength < suggestionLen) suggestionLen = prefixLength;
+	int j = 0;
+	for (int i = 0; i < deleteLen; i++)
+	{
+		char delChar = delete_str.at(i);
+		while (j < suggestionLen && delChar != suggestion.at(j)) j++;
+		if (j == suggestionLen) return false;
+	}
+	return true;
 }
 
 vector<string> SymSpellCheck::ParseWords(string text)
 {
-	return vector<string>();
+	string origin = text;
+	regex rgx("['¡¯\\p{L}-[_]]+");
+	transform(text.begin(), text.end(), text.begin(), ::tolower);
+	vector<string> result;
+	for (sregex_iterator iter(text.begin(), text.end(), rgx); iter != sregex_iterator(); iter++)
+	{
+		smatch tmp = *iter;
+		result.push_back(tmp.str());
+
+	}
+	return result;
 }
 
 unordered_set<string> SymSpellCheck::Edits(string word, int editDistance, unordered_set<string> deleteWords)
 {
-	return unordered_set<string>();
+	editDistance++;
+	if (word.length() > 1) {
+		for (int i = 0; i < word.length(); i++) {
+			string deleted_word = word.erase(i, 1);
+			if ((deleteWords.insert(deleted_word)).second) {
+				//recursion, if maximum edit distance not yet reached
+				if (editDistance < this->maxDictionaryEditDistance) Edits(deleted_word, editDistance, deleteWords);
+			}
+		}
+	}
+	return deleteWords;
 }
 
 unordered_set<string> SymSpellCheck::EditsPrefix(string key)
 {
-	return unordered_set<string>();
+	unordered_set<string> hashSet;
+	if (key.length() <= maxDictionaryEditDistance) hashSet.insert("");
+	if (key.length() > prefixLength) key = key.substr(0, prefixLength);
+	hashSet.insert(key);
+	return Edits(key, 0, hashSet);
 }
 
 int SymSpellCheck::GetStringHash(string s)
 {
-	return 0;
+	int len = s.length();
+	int lenMask = len;
+	if (lenMask > 3) lenMask = 3;
+
+	long int hash = 2166136261L;
+	for (int i = 0; i < len; i++) {
+		hash ^= s.at(i);
+		hash *= 16777619;
+	}
+
+	hash &= this->compactMask;
+	hash |= (long)lenMask;
+	return (int)hash;
 }

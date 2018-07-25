@@ -94,6 +94,16 @@ SuggestionStage::Node::Node()
 {
 }
 
+SuggestionStage::Node::Node(string suggestion, int next) {
+	this->suggestion = suggestion;
+	this->next = next;
+}
+
 SuggestionStage::Entry::Entry()
 {
+}
+
+SuggestionStage::Entry::Entry(int count, int first) {
+	this->count = count;
+	this->first = first;
 }

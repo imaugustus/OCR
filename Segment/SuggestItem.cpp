@@ -38,6 +38,8 @@ bool SuggestItem::operator==(SuggestItem other)
 	else return false;
 }
 
+
+
 int SuggestItem::GetHashCode()
 {
 	hash<string> str_hash;
@@ -50,4 +52,11 @@ string SuggestItem::ToString()
 	stringstream ss;
 	ss << "{" << this->term << ", " << this->distance << ", " << this->count << "}";
 	return ss.str();
+}
+
+
+bool operator>(const SuggestItem & left, const SuggestItem & right)
+{
+	if (left.distance == right.distance) return left.count>right.count;
+	return left.distance>right.distance;
 }
