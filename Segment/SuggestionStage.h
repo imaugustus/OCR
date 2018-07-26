@@ -24,10 +24,7 @@ public:
 		string suggestion;
 		int next;
 		Node();
-		Node(string suggestion, int next) {
-			this->suggestion = suggestion;
-			this->next = next;
-		}
+		Node(string suggestion, int next);
 	};
 
 	class Entry
@@ -36,10 +33,7 @@ public:
 		int count;
 		int first;
 		Entry();
-		Entry(int count, int first) {
-			this->count = count;
-			this->first = first;
-		}
+		Entry(int count, int first);
 	};
 
 private:

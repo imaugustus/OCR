@@ -51,12 +51,10 @@ template<class T>
 int ChunkArray<T>::Add(T value)
 {
 	if (Count == Capacity()) {
-		vector< vector<T>> newValues(Values.size() + 1);
-		for (int i = 0; i < Values.size(); i++) {
-			newValues.push_back(Values[i]);
-		}
-		newValues.push_back(vector<T>(ChunkSize));
-		Values = newValues;
+		//vector< vector<T>> newValues(Values);
+		//newValues.push_back(vector<T>(ChunkSize));
+		//Values = newValues;
+		Values.push_back(vector<T>(ChunkSize));
 	}
 	Values[Row(Count)][Col(Count)] = value;
 	Count++;

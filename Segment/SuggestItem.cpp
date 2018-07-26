@@ -38,6 +38,12 @@ bool SuggestItem::operator==(SuggestItem other)
 	else return false;
 }
 
+bool SuggestItem::operator>(const SuggestItem & right)
+{
+	if (this->distance == right.distance) return this->count>right.count;
+	return this->distance>right.distance;
+}
+
 
 
 int SuggestItem::GetHashCode()
@@ -54,9 +60,3 @@ string SuggestItem::ToString()
 	return ss.str();
 }
 
-
-bool operator>(const SuggestItem & left, const SuggestItem & right)
-{
-	if (left.distance == right.distance) return left.count>right.count;
-	return left.distance>right.distance;
-}

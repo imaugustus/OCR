@@ -21,7 +21,7 @@ SymSpellCheck::SymSpellCheck(int initialCapacity, int maxDictionaryEditDistance,
 	if (countThreshold < 0) countThreshold = defaultCountThreshold;
 
 	this->initialCapacity = initialCapacity;
-	this->words = unordered_map<string, unsigned long long int>();
+	//this->words = unordered_map<string, unsigned long long int>();
 	this->maxDictionaryEditDistance = maxDictionaryEditDistance;
 	this->prefixLength = prefixLength;
 	this->countThreshold = defaultCountThreshold;
@@ -32,17 +32,17 @@ SymSpellCheck::~SymSpellCheck()
 {
 }
 
-bool SymSpellCheck::CreateDictionaryEntry(string key, unsigned long long int count, SuggestionStage staging)
+bool SymSpellCheck::CreateDictionaryEntry(string key, unsigned long long int count, SuggestionStage *staging)
 {
 	if (count <= 0) {
 		if (this->countThreshold > 0) return false;
 		count = 0;
 	}
 	unsigned long long int countPrevious;
-	if (countThreshold > 1 && belowThresholdWords.count(key)==1) {
+	if (countThreshold > 1 && belowThresholdWords.count(key)) {
 		countPrevious = belowThresholdWords[key];
 		// calculate new count for below threshold word
-		count = (numeric_limits<unsigned long long int>::max() - countPrevious > count) ? countPrevious + count : numeric_limits<unsigned long long int>::max();
+		count = ((numeric_limits<unsigned long long int>::max() - countPrevious) > count) ? (countPrevious + count) : numeric_limits<unsigned long long int>::max();
 		// has reached threshold - remove from below threshold collection (it will be added to correct words below)
 		if (count >= countThreshold) {
 			belowThresholdWords.erase(key);
@@ -55,7 +55,7 @@ bool SymSpellCheck::CreateDictionaryEntry(string key, unsigned long long int cou
 	else if (words.count(key)) {
 		countPrevious = words[key];
 		// just update count if it's an already added above threshold word
-		count = (numeric_limits<unsigned long long int>::max() - countPrevious > count) ? countPrevious + count : numeric_limits<unsigned long long int>::max();
+		count = ((numeric_limits<unsigned long long int>::max() - countPrevious) > count) ? (countPrevious + count) : numeric_limits<unsigned long long int>::max();
 		words[key]=count;
 		return false;
 	}
@@ -78,14 +78,14 @@ bool SymSpellCheck::CreateDictionaryEntry(string key, unsigned long long int cou
 	unordered_set<string> edits = EditsPrefix(key);
 
 	// if not staging suggestions, put directly into main data structure
-	if (!&staging) {
-		for (string delete_str:edits)
+	if (staging!=NULL) {
+		for (auto delete_str:edits)
 		{
-			staging.Add(GetStringHash(delete_str), key);
+			(*staging).Add(GetStringHash(delete_str), key);
 		};
 	}
 	else {
-		if (!&deletes) this->deletes = unordered_map<int, vector<string>>(); //initialisierung
+		//if (!&deletes) this->deletes = unordered_map<int, vector<string>>(); //initialisierung
 
 		for(string delete_str : edits){
 			int deleteHash = GetStringHash(delete_str);
@@ -114,16 +114,21 @@ bool SymSpellCheck::LoadDictionary(string corpus)
 	SuggestionStage staging(16384);
 	string key;
 	string count;
+	stringstream ss;
+	unsigned long long int num;
 	while (infile>>key>>count) {
 		if (count!="") {
-			unsigned long long int num;
-			stringstream ss(count);
+			ss<<count;
 			ss >> num;
-			CreateDictionaryEntry(key, num, staging);
+			ss.str("");
+			ss.clear();
+			cout << "num " << num << endl;
+			cout << "key " << key << endl;
+			CreateDictionaryEntry(key, num, &staging);
 		}
 	}
-	if (!&(this->deletes)) this->deletes = unordered_map<int, vector<string>>();
-	CommitStaged(staging);
+	//if (!&(this->deletes)) this->deletes = unordered_map<int, vector<string>>();
+	CommitStaged(&staging);
 	return true;
 }
 
@@ -136,11 +141,11 @@ bool SymSpellCheck::CreateDictionary(string corpus)
 	while (getline(infile, line))
 	{
 		for (string key : ParseWords(line)) {
-			CreateDictionaryEntry(key, 1, staging);
+			CreateDictionaryEntry(key, 1, &staging);
 		}
 	}
 	//if (!(&(this->deletes))) this->deletes = unordered_map<int, vector<string>>(staging.DeleteCount);
-	CommitStaged(staging);
+	CommitStaged(&staging);
 	return true;
 }
 
@@ -149,9 +154,9 @@ void SymSpellCheck::PurgeBelowThresholdWords()
 	belowThresholdWords = unordered_map<string, unsigned long long int>();
 }
 
-void SymSpellCheck::CommitStaged(SuggestionStage staging)
+void SymSpellCheck::CommitStaged(SuggestionStage *staging)
 {
-	staging.CommitTo(deletes);
+	(*staging).CommitTo(deletes);
 }
 
 vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity)
@@ -282,7 +287,10 @@ vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity, int
 			}
 		}
 	}
-	if (suggestions.size() > 1) sort(suggestions.begin(), suggestions.end());
+	if (suggestions.size() > 1) sort(suggestions.begin(), suggestions.end(), [](const SuggestItem &lhs, SuggestItem &rhs)->bool {
+		if (lhs.distance == rhs.distance) return lhs.count>rhs.count;
+		return lhs.distance>rhs.distance;
+	});
 	return suggestions;
 }
 
@@ -317,13 +325,15 @@ vector<SuggestItem> SymSpellCheck::lookupCompound(string input, int maxEditDista
 		}
 
 		lastCombi = false;
-		if (!suggestions.empty() && ((suggestions[0].distance == 0) || (termList1[i].length() == 1))) {
+		if (!suggestions.empty() && ((suggestions[0].distance == 0) || (termList1[i].length() == 1))) 
+		{
 			suggestionParts.push_back(suggestions[0]);
 		}
-		else {
+		else 
+		{
 			vector<SuggestItem> suggestionsSplit;
 			if (!suggestions.empty()) suggestionsSplit.push_back(suggestions[0]);
-			if (termList1[i].length() > 1) {
+			if(termList1[i].length()>1){
 				for (int j = 1; j < termList1[i].length(); j++) {
 					string part1 = termList1[i].substr(0, j);
 					string part2 = termList1[i].substr(j);
@@ -346,15 +356,14 @@ vector<SuggestItem> SymSpellCheck::lookupCompound(string input, int maxEditDista
 				}
 
 				if (!suggestionsSplit.empty()) {
-					sort(suggestionsSplit.begin(), suggestionsSplit.end());
+					sort(suggestionsSplit.begin(), suggestionsSplit.end(), [](const SuggestItem &lhs, SuggestItem &rhs)->bool {
+						if (lhs.distance == rhs.distance) return lhs.count>rhs.count;
+						return lhs.distance>rhs.distance;
+					});
 					suggestionParts.push_back(suggestionsSplit[0]);
 				}
-				else {
-					SuggestItem si(termList1[i], 0, maxEditDistance + 1);
-					suggestionParts.push_back(si);
-				}
-			}
-			else {
+			} 
+			else{
 				SuggestItem si(termList1[i], 0, maxEditDistance + 1);
 				suggestionParts.push_back(si);
 			}
@@ -363,21 +372,21 @@ vector<SuggestItem> SymSpellCheck::lookupCompound(string input, int maxEditDista
 
 	SuggestItem suggestion("", numeric_limits<int>::min(), numeric_limits<long int>::max());
 	stringstream ss;
-	for (SuggestItem si : suggestionParts) {
+	for(auto si:suggestionParts)
+	{
 		ss << si.term;
 		suggestion.count = min(suggestion.count, si.count);
 	}
 	
 	string tmp = ss.str();
 	regex rgx_rpl("\\s+$");
-	tmp = regex_replace(tmp, rgx_rpl, "");
+	tmp = regex_replace(tmp,rgx_rpl, "");
 	suggestion.term = tmp;
 	editDistance = EditDistance(suggestion.term, Damerau);
 	suggestion.distance = editDistance.DamerauLevenshteinDistance(input, maxDictionaryEditDistance);
 	vector<SuggestItem> suggestionLine;
 	suggestionLine.push_back(suggestion);
 	return suggestionLine;
-
 }
 
 vector<SuggestItem> SymSpellCheck::lookupCompound(string input)
@@ -422,7 +431,7 @@ unordered_set<string> SymSpellCheck::Edits(string word, int editDistance, unorde
 			string deleted_word = word.erase(i, 1);
 			if ((deleteWords.insert(deleted_word)).second) {
 				//recursion, if maximum edit distance not yet reached
-				if (editDistance < this->maxDictionaryEditDistance) Edits(deleted_word, editDistance, deleteWords);
+				if(editDistance < this->maxDictionaryEditDistance) Edits(deleted_word, editDistance, deleteWords);
 			}
 		}
 	}

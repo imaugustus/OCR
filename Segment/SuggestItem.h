@@ -11,7 +11,7 @@ public:
 	~SuggestItem();
 	int CompareTo(SuggestItem other);
 	bool operator==(SuggestItem other);
-	friend bool operator>(const SuggestItem& left,const SuggestItem& right);
+	bool operator>(const SuggestItem& right);
 	int GetHashCode();
 	string ToString();
 	string term;

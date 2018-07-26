@@ -28,11 +28,11 @@ public:
 		Closest,
 		All,
 	};
-	bool CreateDictionaryEntry(string key, unsigned long long int count, SuggestionStage staging);
+	bool CreateDictionaryEntry(string key, unsigned long long int count, SuggestionStage *staging);
 	bool LoadDictionary(string corpus);
 	bool CreateDictionary(string corpus);
 	void PurgeBelowThresholdWords();
-	void CommitStaged(SuggestionStage staging);
+	void CommitStaged(SuggestionStage *staging);
 	vector<SuggestItem> Lookup(string input, Verbosity verbosity);
 	vector<SuggestItem> Lookup(string input, Verbosity verbosity, int maxEditDistance);
 	vector<SuggestItem> Lookup(string input, Verbosity verbosity, int maxEditDistance, bool includeUnknown);
@@ -41,11 +41,11 @@ public:
 
 
 private:
-	const int defaultMaxEditDistance = 2;
-	const int defaultPrefixLength = 7;
-	const int defaultCountThreshold = 1;
-	const int defaultInitialCapacity = 16;
-	const int defaultCompactLevel = 5;
+	int defaultMaxEditDistance = 2;
+	int defaultPrefixLength = 7;
+	int defaultCountThreshold = 1;
+	int defaultInitialCapacity = 16;
+	int defaultCompactLevel = 5;
 	int initialCapacity;
 	int maxDictionaryEditDistance;
 	int prefixLength; //prefix length  5..7
