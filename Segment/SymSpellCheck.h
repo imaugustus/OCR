@@ -38,6 +38,8 @@ public:
 	vector<SuggestItem> Lookup(string input, Verbosity verbosity, int maxEditDistance, bool includeUnknown);
 	vector<SuggestItem> lookupCompound(string input, int maxEditDistance);
 	vector<SuggestItem> lookupCompound(string input);
+	unordered_map<int, vector<string>> deletes;
+	unordered_map<string, unsigned long long int> words;
 
 
 private:
@@ -53,8 +55,8 @@ private:
 	unsigned int compactMask;
 	DistanceAlgorithm distanceAlgorithm = Damerau;
 	int maxDictionaryWordLength;
-	unordered_map<int, vector<string>> deletes;
-	unordered_map<string, unsigned long long int> words;
+	//unordered_map<int, vector<string>> deletes;
+	//unordered_map<string, unsigned long long int> words;
 	unordered_map<string, unsigned long long int> belowThresholdWords;
 	bool DeleteInSuggestionPrefix(string delete_str, int deleteLen, string suggestion, int suggestionLen);
 	vector<string> ParseWords(string text);

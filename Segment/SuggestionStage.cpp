@@ -55,7 +55,7 @@ void SuggestionStage::Add(int deleteHash, string suggestion)
 	Nodes.Add(Node{suggestion, next});
 }
 
-void SuggestionStage::CommitTo(unordered_map<int, vector<string>> permanentDeletes)
+void SuggestionStage::CommitTo(unordered_map<int, vector<string>> *permanentDeletes)
 {
 	unordered_map<int, Entry>::iterator iter_out;
 	unordered_map<int, vector<string>>::iterator iter_in;
@@ -64,26 +64,29 @@ void SuggestionStage::CommitTo(unordered_map<int, vector<string>> permanentDelet
 		int i;
 		int key = iter_out->first;
 		Entry value = iter_out->second;
-		vector<string> suggestion;
-		iter_in = permanentDeletes.find(key);
-		if (iter_in!=permanentDeletes.end()) {
-			suggestion = iter_in->second;
-			i = suggestion.size();
-			vector<string> newSuggestion(i + value.count);
-			newSuggestion.insert(newSuggestion.end(), suggestion.begin(),suggestion.end());
-			permanentDeletes[key] = newSuggestion;
+		vector<string> suggestions;
+		iter_in = (*permanentDeletes).find(key);
+		if (iter_in!=(*permanentDeletes).end()) {
+			suggestions = iter_in->second;
+			i = suggestions.size();
+			vector<string> newSuggestions(i+value.count);
+			for (int j = 0; j < suggestions.size(); j++) {
+				newSuggestions.push_back(suggestions[j]);
+			}
+			(*permanentDeletes)[key] = newSuggestions;
+			suggestions = newSuggestions;
 		}
 		else {
 			i = 0;
-			vector< string> temp =vector<string>(value.count);
-			suggestion = temp;
-			permanentDeletes[key] = suggestion;
+			
+			suggestions = vector< string>(value.count);
+			(*permanentDeletes)[key] = suggestions;
 		}
 		int next = value.first;
 		Node node;
 		while (next >= 0) {
 			node = Nodes.getValues(next);
-			suggestion[i] = node.suggestion;
+			suggestions[i] = node.suggestion;
 			next = node.next;
 			i++;
 		}

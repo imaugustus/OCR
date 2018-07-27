@@ -5,6 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include <regex>
+#include <chrono>
 
 
 using namespace std;
@@ -24,7 +25,7 @@ SymSpellCheck::SymSpellCheck(int initialCapacity, int maxDictionaryEditDistance,
 	//this->words = unordered_map<string, unsigned long long int>();
 	this->maxDictionaryEditDistance = maxDictionaryEditDistance;
 	this->prefixLength = prefixLength;
-	this->countThreshold = defaultCountThreshold;
+	this->countThreshold = countThreshold;
 	this->compactMask = (0xffffffff >> (3 + defaultCompactLevel)) << 2;
 }
 
@@ -38,36 +39,50 @@ bool SymSpellCheck::CreateDictionaryEntry(string key, unsigned long long int cou
 		if (this->countThreshold > 0) return false;
 		count = 0;
 	}
+	unsigned long long int lmt = numeric_limits<unsigned long long int>::max();
 	unsigned long long int countPrevious;
-	if (countThreshold > 1 && belowThresholdWords.count(key)) {
-		countPrevious = belowThresholdWords[key];
+	unordered_map<string, unsigned long long int>::iterator iter_b(belowThresholdWords.find(key));
+	unordered_map<string, unsigned long long int>::iterator iter_w(words.find(key));
+	if (countThreshold > 1 && iter_b!=belowThresholdWords.end()) {
+		countPrevious =iter_b->second;
+		cout << "countPrevious " << countPrevious << endl;
 		// calculate new count for below threshold word
-		count = ((numeric_limits<unsigned long long int>::max() - countPrevious) > count) ? (countPrevious + count) : numeric_limits<unsigned long long int>::max();
+		count = ((lmt - countPrevious) > count) ? (countPrevious + count) : lmt;
+		cout << "count" << count << endl;
 		// has reached threshold - remove from below threshold collection (it will be added to correct words below)
 		if (count >= countThreshold) {
 			belowThresholdWords.erase(key);
+			cout << "Remove key " << key << endl;
 		}
 		else {
 			belowThresholdWords[key]=count; // = count;
+			cout << "below Push key " << key << " count " << count << endl;
 			return false;
 		}
 	}
-	else if (words.count(key)) {
-		countPrevious = words[key];
+	else if (iter_w!=words.end()) {
+		cout << "iter_w!=words.end()" << endl;
+		countPrevious = iter_w->second;
+		cout << "countPrevious " << countPrevious << endl;
 		// just update count if it's an already added above threshold word
-		count = ((numeric_limits<unsigned long long int>::max() - countPrevious) > count) ? (countPrevious + count) : numeric_limits<unsigned long long int>::max();
+		count = ((lmt - countPrevious) > count) ? (countPrevious + count) : lmt;
+		cout << "count" << count << endl;
 		words[key]=count;
+		cout << "words Push key " << key << " count " << count << endl;
 		return false;
 	}
 	else if (count < countThreshold) {
 		// new or existing below threshold word
+		cout << "count < countThreshold " << endl;
 		belowThresholdWords[key]=count;
+		cout << "below Push key " << key << " count " << count << endl;
 		return false;
 	}
 
 	// what we have at this point is a new, above threshold word
 	words[key]=count;
-	if (key == "can't") cout << "Added to words..!" << endl;
+	cout << "words Push key " << key << " count " << count << endl;
+	//if (key == "can't") cout << "Added to words..!" << endl;
 
 	//edits/suggestions are created only once, no matter how often word occurs
 	//edits/suggestions are created only as soon as the word occurs in the corpus,
@@ -76,32 +91,43 @@ bool SymSpellCheck::CreateDictionaryEntry(string key, unsigned long long int cou
 
 	//create deletes
 	unordered_set<string> edits = EditsPrefix(key);
+	cout << "Create edits" << "edit length " << edits.size()<< endl;
 
 	// if not staging suggestions, put directly into main data structure
 	if (staging!=NULL) {
 		for (auto delete_str:edits)
 		{
+			cout << "delete_str being added to staging  " << delete_str << endl;
 			(*staging).Add(GetStringHash(delete_str), key);
 		};
 	}
 	else {
 		//if (!&deletes) this->deletes = unordered_map<int, vector<string>>(); //initialisierung
 
-		for(string delete_str : edits){
+		for(auto delete_str : edits){
 			int deleteHash = GetStringHash(delete_str);
+			cout << "deleteHash " << deleteHash << endl;
+			unordered_map<int, vector<string>>::iterator iter_d(deletes.find(deleteHash));
 			vector<string> suggestions;
-			if (deletes.count(deleteHash)) {
-				suggestions = deletes[deleteHash];
-				vector<string> newSuggestions(suggestions.size()+1);
-				newSuggestions.insert(newSuggestions.begin(), suggestions.begin(), suggestions.end());
-				deletes[deleteHash]=newSuggestions;
-				suggestions = newSuggestions;
+			if (iter_d!=deletes.end()) {
+				suggestions = iter_d->second;
+				cout << "iter_d!=deletes.end() first suggestion of suggestions "<<suggestions[0] << endl;
+				suggestions.push_back(string(""));
+				deletes[deleteHash] = suggestions;
+				//vector<string> newSuggestions(suggestions.size()+1);
+				//newSuggestions.insert(newSuggestions.begin(), suggestions.begin(), suggestions.end());
+				//deletes[deleteHash]=newSuggestions;
+				//suggestions = newSuggestions;
 			}
 			else {
 				suggestions = vector<string>(1);
+				cout << "iter_d==deletes.end()" << suggestions[0] << endl;
 				deletes[deleteHash]=suggestions;
+				cout << "deletes  Push deleteHash " << deleteHash << "suggestions " << suggestions[0] << endl;
+
 			}
 			suggestions[suggestions.size() - 1] = key;
+			cout << "suggestions[suggestions.size() - 1] = key " << key << endl;
 		};
 	}
 	return true;
@@ -112,22 +138,27 @@ bool SymSpellCheck::LoadDictionary(string corpus)
 	ifstream infile(corpus);
 	if (!infile.good()) return false;
 	SuggestionStage staging(16384);
-	string key;
-	string count;
-	stringstream ss;
-	unsigned long long int num;
-	while (infile>>key>>count) {
-		if (count!="") {
-			ss<<count;
-			ss >> num;
-			ss.str("");
-			ss.clear();
-			cout << "num " << num << endl;
-			cout << "key " << key << endl;
-			CreateDictionaryEntry(key, num, &staging);
-		}
+	string line;
+	int breakcount = 0;
+	while (getline(infile, line)) {
+		breakcount++;
+		auto start_r = chrono::high_resolution_clock::now();
+		stringstream iss(line);
+		string key;
+		unsigned long long int count;
+		iss >> key >> count;
+		//cout << "key " << key << endl;
+		//cout << "count " << count << endl;
+		//auto end_r = chrono::high_resolution_clock::now();
+		//cout << "Read takes about  " << chrono::duration_cast<chrono::milliseconds>(end_r - start_r).count() << endl;
+		//cout << " Begin create entry" << endl;
+		//auto start = chrono::high_resolution_clock::now();
+		CreateDictionaryEntry(key, count, &staging);
+		//auto end = chrono::high_resolution_clock::now();
+		//cout << "Create entry takes about  " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << endl;
 	}
 	//if (!&(this->deletes)) this->deletes = unordered_map<int, vector<string>>();
+	cout << "Begin commit staging" << endl;
 	CommitStaged(&staging);
 	return true;
 }
@@ -156,7 +187,7 @@ void SymSpellCheck::PurgeBelowThresholdWords()
 
 void SymSpellCheck::CommitStaged(SuggestionStage *staging)
 {
-	(*staging).CommitTo(deletes);
+	(*staging).CommitTo(&deletes);
 }
 
 vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity)
@@ -201,8 +232,9 @@ vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity, int
 	}
 
 	EditDistance distanceComparer(input, this->distanceAlgorithm);
-	while (candidatePointer != candidates.end()) {
-		string candidate = *candidatePointer++;
+	//while (candidatePointer != candidates.end()) {
+	for (vector<string>::iterator candidatePointer = candidates.begin(); candidatePointer != candidates.end(); candidatePointer++) {
+		string candidate = (*candidatePointer);
 		int candidateLen = candidate.length();
 		int lengthDiff = inputPrefixLen - candidateLen;
 
@@ -425,12 +457,17 @@ vector<string> SymSpellCheck::ParseWords(string text)
 
 unordered_set<string> SymSpellCheck::Edits(string word, int editDistance, unordered_set<string> deleteWords)
 {
+	cout << "deleteWords length " << deleteWords.size() << endl;
 	editDistance++;
+	cout << "editDistance " << editDistance << endl;
 	if (word.length() > 1) {
 		for (int i = 0; i < word.length(); i++) {
+			cout << "i "<<i << endl;
 			string deleted_word = word.erase(i, 1);
+			cout << "deleted_word " << deleted_word <<endl;
 			if ((deleteWords.insert(deleted_word)).second) {
 				//recursion, if maximum edit distance not yet reached
+				cout << "Continue edit remaining " << deleted_word <<endl;
 				if(editDistance < this->maxDictionaryEditDistance) Edits(deleted_word, editDistance, deleteWords);
 			}
 		}
@@ -441,9 +478,17 @@ unordered_set<string> SymSpellCheck::Edits(string word, int editDistance, unorde
 unordered_set<string> SymSpellCheck::EditsPrefix(string key)
 {
 	unordered_set<string> hashSet;
-	if (key.length() <= maxDictionaryEditDistance) hashSet.insert("");
-	if (key.length() > prefixLength) key = key.substr(0, prefixLength);
+	cout << "key.length " << key.length() << endl;
+	if (key.length() <= maxDictionaryEditDistance) { 
+		cout << "key.length() <= maxDictionaryEditDistance" << endl;
+		hashSet.insert("");
+	};
+	if (key.length() > prefixLength) { 
+		key = key.substr(0, prefixLength); 
+		cout << "key " << key << endl;
+	}
 	hashSet.insert(key);
+	cout << "hashset size " << hashSet.size() << endl;
 	return Edits(key, 0, hashSet);
 }
 
@@ -453,13 +498,13 @@ int SymSpellCheck::GetStringHash(string s)
 	int lenMask = len;
 	if (lenMask > 3) lenMask = 3;
 
-	long int hash = 2166136261L;
+	unsigned long int hash = 2166136261L;
 	for (int i = 0; i < len; i++) {
 		hash ^= s.at(i);
 		hash *= 16777619;
 	}
 
 	hash &= this->compactMask;
-	hash |= (long)lenMask;
+	hash |= (unsigned long int)lenMask;
 	return (int)hash;
 }

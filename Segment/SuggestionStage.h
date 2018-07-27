@@ -16,7 +16,7 @@ public:
 	int NodeCount();
 	void Clear();
 	void Add(int deleteHash, string suggestion);
-	void CommitTo(unordered_map<int, vector<string>> permanentDeletes);
+	void CommitTo(unordered_map<int, vector<string>> *permanentDeletes);
 
 	class Node
 	{
