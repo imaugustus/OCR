@@ -40,6 +40,10 @@ public:
 	vector<SuggestItem> lookupCompound(string input);
 	unordered_map<int, vector<string>> deletes;
 	unordered_map<string, unsigned long long int> words;
+	unordered_map<string, unsigned long long int>::iterator iter_b;
+	unordered_map<string, unsigned long long int>::iterator iter_w;
+	unsigned long long int lmt = numeric_limits<unsigned long long int>::max();
+	int GetStringHash(string s);
 
 
 private:
@@ -52,7 +56,7 @@ private:
 	int maxDictionaryEditDistance;
 	int prefixLength; //prefix length  5..7
 	unsigned long long int countThreshold; //a treshold might be specifid, when a term occurs so frequently in the corpus that it is considered a valid word for spelling correction
-	unsigned int compactMask;
+	int compactMask;
 	DistanceAlgorithm distanceAlgorithm = Damerau;
 	int maxDictionaryWordLength;
 	//unordered_map<int, vector<string>> deletes;
@@ -60,8 +64,8 @@ private:
 	unordered_map<string, unsigned long long int> belowThresholdWords;
 	bool DeleteInSuggestionPrefix(string delete_str, int deleteLen, string suggestion, int suggestionLen);
 	vector<string> ParseWords(string text);
-	unordered_set<string> Edits(string word, int editDistance, unordered_set<string> deleteWords);
+	unordered_set<string> Edits(string word, int editDistance, unordered_set<string> *deleteWords);
 	unordered_set<string> EditsPrefix(string key);
-	int GetStringHash(string s);
+	
 };
 
