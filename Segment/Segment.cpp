@@ -21,11 +21,11 @@ int main()
 	int maxEditDistance = 3;
 	SymSpellCheck::Verbosity verbosity = SymSpellCheck::All;
 	SymSpellCheck symSpell(-1, maxEditDistance, -1,10);
-	string path = "d:\\OCR\\Segment\\short.txt";
+	string path = "d:\\OCR\\Segment\\new.txt";
 	if (!symSpell.LoadDictionary(path)) {
 		cout << "File not found" << endl;
 	}
-	string input="and";
+	string input="footboll";
 	//vector<string> res = symSpell.deletes[-368299363];
 	vector<SuggestItem> suggestions = symSpell.Lookup(input, verbosity);
 	cout << suggestions[0].term << endl;
