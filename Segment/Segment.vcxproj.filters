@@ -53,9 +53,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Segment.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="TM.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -81,6 +78,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SymSpellCheck.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OCR.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

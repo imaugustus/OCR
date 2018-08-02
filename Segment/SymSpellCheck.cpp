@@ -158,11 +158,11 @@ bool SymSpellCheck::LoadDictionary(string corpus)
 		//auto end_r = chrono::high_resolution_clock::now();
 		//cout << "Read takes about  " << chrono::duration_cast<chrono::milliseconds>(end_r - start_r).count() << endl;
 		//cout << " Begin create entry" << endl;
-		auto start = chrono::high_resolution_clock::now();
-		cout << "Creating dictionary entry " << key << endl;
+		//auto start = chrono::high_resolution_clock::now();
+		//cout << "Creating dictionary entry " << key << endl;
 		CreateDictionaryEntry(key, count, &staging);
-		auto end = chrono::high_resolution_clock::now();
-		cout << "Create entry takes about  " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << endl;
+		//auto end = chrono::high_resolution_clock::now();
+		//cout << "Create entry takes about  " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << endl;
 	}
 	//if (!&(this->deletes)) this->deletes = unordered_map<int, vector<string>>();
 	//cout << "deletes size before commit " << deletes.size() << endl;
