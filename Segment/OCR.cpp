@@ -26,10 +26,11 @@ int main()
 		cout << "File not found" << endl;
 	}
 	string input="footboll";
-	vector<string> test_case = { "footboll" , "hel1o", "keyb0ard", "corporavion", "microsoft" };
-	vector<vector<SuggestItem>> result(5);
-	for (auto each:test_case) {
-		result.push_back(symSpell.Lookup(each, verbosity));
-	}
+	vector<SuggestItem> res = symSpell.Lookup(input, verbosity);
+	//vector<string> test_case = { "footboll" , "hel1o", "keyb0ard", "corporavion", "microsoft" };
+	//vector<vector<SuggestItem>> result(5);
+	//for (auto each:test_case) {
+	//	result.push_back(symSpell.Lookup(each, verbosity));
+	//}
     return 0;
 }
