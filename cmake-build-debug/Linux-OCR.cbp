@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Linux-OCR"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/augustus/Documents/NLP/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/augustus/Documents/NLP/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/augustus/Documents/NLP/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Main">
+				<Option output="/home/augustus/Documents/NLP/cmake-build-debug/Main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/augustus/Documents/NLP/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/augustus/Documents/NLP/include"/>
+					<Add directory="/home/augustus/Documents/NLP/src"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 Main"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Main/fast">
+				<Option output="/home/augustus/Documents/NLP/cmake-build-debug/Main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/augustus/Documents/NLP/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/augustus/Documents/NLP/include"/>
+					<Add directory="/home/augustus/Documents/NLP/src"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 Main/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/augustus/Documents/NLP/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/augustus/Documents/NLP/include/ChunkArray.h">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/include/EditDistance.h">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/include/SuggestItem.h">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/include/SuggestionStage.h">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/include/SymSpellCheck.h">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/include/Transfer.h">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/include/VTM.h">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/main.cpp">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/src/EditDistance.cpp">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/src/SuggestItem.cpp">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/src/SuggestionStage.cpp">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/src/SymSpellCheck.cpp">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/src/Transfer.cpp">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/src/VTM.cpp">
+			<Option target="Main"/>
+		</Unit>
+		<Unit filename="/home/augustus/Documents/NLP/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

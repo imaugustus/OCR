@@ -1,10 +1,11 @@
-#include "stdafx.h"
 #include "VTM.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
 #include <vector>
+#include <cstring>
+#include <cmath>
 
 using namespace std;
 
@@ -39,7 +40,7 @@ bool VTM::load_dict(string corpus_path)
 			if (word.length() > max_dict_word_length) max_dict_word_length = word.length();
 			this->dictionary[word] = num;
 		}
-		cout << "Dict loaded" << endl;
+		//cout << "Dict loaded" << endl;
 		return true;
 	}
 }

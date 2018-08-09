@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "EditDistance.h"
 #include <iostream>
 #include <string>

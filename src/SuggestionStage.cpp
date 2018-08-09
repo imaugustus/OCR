@@ -1,5 +1,4 @@
-﻿#include "stdafx.h"
-#include "SuggestionStage.h"
+﻿#include "SuggestionStage.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -61,7 +60,7 @@ void SuggestionStage::Add(int deleteHash, string suggestion)
 
 void SuggestionStage::CommitTo(unordered_map<int, vector<string>> *permanentDeletes)
 {
-	cout << "Begin push hash and str to deletes" << endl;
+	//cout << "Begin push hash and str to deletes" << endl;
 	unordered_map<int, Entry>::iterator iter_Delete;
 	unordered_map<int, vector<string>>::iterator iter_in;
 	for(iter_Delete =Deletes.begin(); iter_Delete !=Deletes.end(); iter_Delete++)

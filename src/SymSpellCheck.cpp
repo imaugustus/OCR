@@ -1,5 +1,4 @@
-﻿#include "stdafx.h"
-#include "SymSpellCheck.h"
+﻿#include "SymSpellCheck.h"
 #include <limits>
 #include <fstream>
 #include <sstream>
@@ -227,7 +226,7 @@ vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity, int
 	long int suggestionCount;
 
 	if (words.count(input)) {
-		cout << "input in existed word map " << input << endl;
+		//cout << "input in existed word map " << input << endl;
 		suggestionCount = words[input];
 		suggestions.push_back(SuggestItem(input, 0, suggestionCount));
 		if (verbosity != All) return suggestions;
@@ -241,18 +240,18 @@ vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity, int
 	int inputPrefixLen = inputLen;
 	if (inputPrefixLen > prefixLength) {
 		inputPrefixLen = prefixLength;
-		cout << "Push back substr " << input.substr(0, inputPrefixLen) << endl;
+		//cout << "Push back substr " << input.substr(0, inputPrefixLen) << endl;
 		candidates.push_back(input.substr(0, inputPrefixLen));
 	}
 	else {
-		cout << "Push back all str " << input << endl;
+		//cout << "Push back all str " << input << endl;
 		candidates.push_back(input);
 	}
 
 	EditDistance distanceComparer(input, this->distanceAlgorithm);
 	while(candidatePointer<candidates.size()) {
 		string candidate = candidates[candidatePointer++];
-		cout << "candidate " << candidate << endl;
+		//cout << "candidate " << candidate << endl;
 		int candidateLen = candidate.length();
 		int lengthDiff = inputPrefixLen - candidateLen;
 
@@ -262,10 +261,10 @@ vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity, int
 		}
 
 		if (deletes.count(GetStringHash(candidate))) {
-			cout << "candidate hash " <<candidate << " " << GetStringHash(candidate) << endl;
+			//cout << "candidate hash " <<candidate << " " << GetStringHash(candidate) << endl;
 			vector<string> dictSuggestions = deletes[GetStringHash(candidate)];
 			for (string suggestion : dictSuggestions) {
-				cout << "suggestion "<< suggestion << endl;
+				//cout << "suggestion "<< suggestion << endl;
 				if (suggestion == input) continue;
 				int suggestionLen = suggestion.length();
 
@@ -299,12 +298,12 @@ vector<SuggestItem> SymSpellCheck::Lookup(string input, Verbosity verbosity, int
 						if ((verbosity != All && !DeleteInSuggestionPrefix(candidate, candidateLen, suggestion, suggestionLen))
 							|| !consideredSuggestions.insert(suggestion).second) continue;
 						distance = distanceComparer.compare(suggestion, maxEditDistance2);
-						cout << "distance" << distance << endl;
+						//cout << "distance" << distance << endl;
 						if (distance < 0) continue;
 					}
 					if (distance <= maxEditDistance2) {
 						suggestionCount = words[suggestion];
-						cout << "suggestion Count" << suggestionCount<<endl;						
+						//cout << "suggestion Count" << suggestionCount<<endl;
 						SuggestItem si(suggestion, distance, suggestionCount);
 						if (suggestions.size() > 0) {
 							switch (verbosity) {
