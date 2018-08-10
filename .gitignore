@@ -11,6 +11,8 @@
 *.userprefs
 
 # Build results
+build
+build/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -21,6 +23,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+cmake-build-debug/
 
 # Visual Studio 2015 cache/options directory
 .vs/
